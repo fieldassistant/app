@@ -10,6 +10,12 @@ class QJSValue;
 class QJSEngine;
 class QFileSystemWatcher;
 
+typedef struct {
+    QString name;
+    QString path;
+} ImageOut;
+
+
 class App : public QObject {
     Q_OBJECT
     
@@ -34,6 +40,12 @@ class App : public QObject {
     void loadTemplates();
     void watchImages();
     
+    bool writeCsv(QIODevice *file, const EntrySet &set) const;
+    
+    bool writeImage(QIODevice *file, const QString &image) const;
+    
+    QList<ImageOut> getSetImages(const EntrySet &set) const;
+    
 public:
     explicit App(QObject *parent = nullptr);
     
@@ -57,7 +69,7 @@ public:
     
     Q_INVOKABLE QString exportSet(const QString &fileName, int setId);
     
-    Q_INVOKABLE bool csvPathExists(const QString &fileName) const;
+    Q_INVOKABLE bool exportPathExists(const QString &fileName) const;
     
     inline Q_INVOKABLE int nextSetId() const {
         return db.nextSetId();

@@ -12,6 +12,8 @@
 #include <QJsonObject>
 #include <QDateTime>
 #include <QRegularExpression>
+#include <quazipfile.h>
+#include <JlCompress.h>
 
 static App* instance = nullptr;
 
@@ -212,15 +214,35 @@ int App::removeSet(int setId) {
     }
 }
 
-bool App::csvPathExists(const QString &fileName) const {
+bool App::exportPathExists(const QString &fileName) const {
     if (fileName.isEmpty()) return false;
     
     QString path(csvPath + "/" + fileName);
-    if (!path.endsWith(".csv")) {
-        path.append(".csv");
+    if (!path.endsWith(".zip")) {
+        path.append(".zip");
     }
     
     return QFile::exists(path);
+}
+
+QList<ImageOut> App::getSetImages(const EntrySet &set) const {
+    QList<ImageOut> images;
+    
+    for (Entry entry : set.entries.values()) {
+        int num = 1;
+        for (QString path : entry.images) {
+            QFileInfo info(path);
+            
+            QString name = QString("%1-%2.%3")
+                .arg(entry.voucher)
+                .arg(QString::asprintf("%03d", num++))
+                .arg(info.suffix());
+            
+            images.append({ name, path });
+        }
+    }
+    
+    return images;
 }
 
 QString App::exportSet(const QString &fileName, int setId) {
@@ -229,15 +251,79 @@ QString App::exportSet(const QString &fileName, int setId) {
         return "";
     }
     
-    QFile file(csvPath + "/" + fileName);
-    const QString path = file.fileName();
+    const EntrySet set = db.sets[setId];
     
-    if (!file.open(QIODevice::WriteOnly)) {
-        qWarning() << "Cannot write file" << path;
+    QFile file(csvPath + "/" + fileName);
+    QuaZip zip(&file);
+    
+    if (!zip.open(QuaZip::mdCreate)) {
+        qWarning() << "Could not open zip file" << file.fileName();
+        qWarning() << file.errorString();
         return "";
     }
     
-    CsvWriter csv(&file);
+    {
+        QuaZipFile csv(&zip);
+        
+        if (!csv.open(QIODevice::WriteOnly, QuaZipNewInfo(set.name + ".csv"))) {
+            qWarning() << "Cannot open zip csv for writing" << set.name;
+            qWarning() << file.errorString();
+            return "";
+        }
+        
+        writeCsv(&csv, set);
+        csv.close();
+    }
+    
+    QList<ImageOut> images = getSetImages(set);
+    
+    for (ImageOut pair : images) {
+        QuaZipFile image(&zip);
+        
+        if (!image.open(QIODevice::WriteOnly, QuaZipNewInfo(pair.name))) {
+            qWarning() << "Cannot open zip image for writing" << pair.path;
+            qWarning() << file.errorString();
+            continue;
+        }
+        
+        writeImage(&image, pair.path);
+        image.close();
+    }
+    
+    zip.close();
+    return file.fileName();
+}
+
+static const QRegularExpression FILE_RE("^file:///");
+
+bool App::writeImage(QIODevice *file, const QString &image) const {
+    
+    QString imagePath(image);
+    imagePath.replace(FILE_RE, "");
+    
+    QFile copy(imagePath);
+    
+    if (!copy.open(QIODevice::ReadOnly)) {
+        qWarning() << "Cannot open image" << image;
+        qWarning() << copy.errorString();
+        return false;
+    }
+    
+    while (!copy.atEnd()) {
+        char buf[4096];
+        qint64 readLen = copy.read(buf, 4096);
+        if (readLen <= 0) break;
+        if (file->write(buf, readLen) != readLen) break;
+    }
+    
+    copy.close();
+    return true;
+}
+
+
+bool App::writeCsv(QIODevice* file, const EntrySet &set) const {
+    
+    CsvWriter csv(file);
     csv.write("Voucher");
     csv.write("Date");
     csv.write("Time");
@@ -245,8 +331,6 @@ QString App::exportSet(const QString &fileName, int setId) {
     csv.write("Longitude");
     csv.write("Altitude (m)");
     csv.write("Collector");
-    
-    const EntrySet set = db.sets[setId];
     
     QStringList fieldNames = set.getFieldNames();
     
@@ -277,9 +361,8 @@ QString App::exportSet(const QString &fileName, int setId) {
         csv.newRow();
     }
     
-    file.close();
-    qDebug() << "Written file" << path;
-    return path;
+    qDebug() << "Written csv file.";
+    return true;
 }
 
 static const QRegularExpression RE("%\\d*[^\\dd]");

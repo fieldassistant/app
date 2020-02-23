@@ -12,6 +12,7 @@ Item {
     
     function onExport() {
         dialog.path = App.exportSet(fileNameField.text, root.set_id)
+        
         if (dialog.path) {
             dialog.open();
         }
@@ -42,14 +43,14 @@ Item {
             anchors.right: parent.right
             
             label: qsTr("File name")
-            placeholder: root.name + ".csv"
+            placeholder: root.name + ".zip"
             
             validMessage: qsTr("Exists")
-            valid: !App.csvPathExists(text)
+            valid: !App.exportPathExists(text)
             
             Binding on text {
                 property: "text"
-                value: root.name + ".csv"
+                value: root.name + ".zip"
             }
         }
         
