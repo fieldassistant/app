@@ -28,9 +28,13 @@ unix {
     headers.files = $$HEADERS
     
     INSTALLS += headers
+}
+unix!android {
     LIBS += $$OUT_PWD/libzlib.so
 }
-
+android {
+    LIBS += $$OUT_PWD/libzlib_$${QT_ARCH}.so
+}
 win32 {
     headers.path = $$PREFIX/include/quazip
     headers.files = $$HEADERS

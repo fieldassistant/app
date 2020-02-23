@@ -60,4 +60,12 @@ ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
 INCLUDEPATH += $$PWD/../quazip/quazip
 win32: LIBS += $$OUT_PWD/../zlib.dll $$OUT_PWD/../quazip.dll
-#linux: LIBS += $$OUT_PWD/../libzlib.so $$OUT_PWD/../libquazip.so
+
+unix!android: {
+    LIBS += $$OUT_PWD/../libzlib.so
+    LIBS += $$OUT_PWD/../libquazip.so
+}
+android: {
+    LIBS += $$OUT_PWD/../libzlib_$${QT_ARCH}.so
+    LIBS += $$OUT_PWD/../libquazip_$${QT_ARCH}.so
+}

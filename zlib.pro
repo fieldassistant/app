@@ -4,7 +4,9 @@
 TEMPLATE = lib
 QT -= gui
 
-QMAKE_CFLAGS += -Wno-implicit-fallthrough
+QMAKE_CFLAGS += \
+    -Wno-implicit-fallthrough \
+    -Wno-implicit-function-declaration
 
 TARGET = zlib
 
@@ -18,7 +20,9 @@ HEADERS = \
    $$PWD/zlib/inftrees.h \
    $$PWD/zlib/trees.h \
    $$PWD/zlib/zlib.h \
-   $$PWD/zlib/zutil.h
+   $$PWD/zlib/zutil.h \
+   $$PWD/zlib/zconf.h
+
 
 SOURCES = \
    $$PWD/zlib/adler32.c \

@@ -12,6 +12,3 @@ SUBDIRS += \
 
 quazip.depends = zlib.pro
 bugman.depends = quazip.pro
-
-win32: LIBS += $$PWD/zlib.dll
-linux: LIBS += $$PWD/libzlib.so

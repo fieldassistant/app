@@ -21,7 +21,7 @@ App::App(QObject *parent)
         : QObject(parent) {
     
     appPath = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).last();
-    csvPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).last();
+    csvPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first() + "/Field Assistant";
     imagesPaths = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
     cameraPath = imagesPaths.first() + "/Field Assistant";
     dbPath = appPath + "/db.json";
