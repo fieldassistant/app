@@ -9,6 +9,7 @@ class QQmlEngine;
 class QJSValue;
 class QJSEngine;
 class QFileSystemWatcher;
+class ShareUtils;
 
 typedef struct {
     QString name;
@@ -32,6 +33,7 @@ class App : public QObject {
     QString csvPath;
     QString dbPath;
     
+    ShareUtils* share;
     EntryDatabase db;
     QList<EntryTemplate> templates;
     

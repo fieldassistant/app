@@ -7,25 +7,31 @@
 
 #### features
 - about view
-- export images zip
 - prevent duplicate vouchers
+- new transitions for stackview
+- ios builds
 
 #### fixes
+- fix editing sets
+- edit view is missing custom fields
+- opening entry edit view is slow
 - fix home view first swipe panel
     - current workaround is gross
-- fix editing sets
-- remove filter hack fix after 5.14.2 update
-- images picker kinda jumps when closing
-- the image preview slides side-to-side when opening
-- fix camera image orientation on saved files
+- some bugs around selection sets in image picker
+- new camera images aren't refreshed into the image picker
+  - probably image lists not updating again
+- fix camera image orientation on saved files?
 - I think the gps position doesn't update properly
-- the "active" state for the imagebar loader doesn't really work
+  - like, first data doesn't exist at all
 - remove ticks on entryblock imagebar
-- new transitions for stackview
+- 
 
 #### housework
-- migrate navigation to stackview
+- remove filter hack fix after 5.14.2 update
+- images picker kinda jumps when closing
 - separate entry types into separate files
+- the "active" state for the imagebar loader doesn't really work
+- the image preview slides side-to-side when opening
 - some docs/comments
 - onTextChanged in EntryField and TemplateField is kinda dodgey
     - could Qt.binding() fix it?

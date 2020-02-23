@@ -14,6 +14,7 @@
 #include <QRegularExpression>
 #include <quazipfile.h>
 #include <JlCompress.h>
+#include "share/shareutils.h"
 
 static App* instance = nullptr;
 
@@ -21,15 +22,33 @@ App::App(QObject *parent)
         : QObject(parent) {
     
     appPath = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).last();
-    csvPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first() + "/Field Assistant";
     imagesPaths = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
-    cameraPath = imagesPaths.first() + "/Field Assistant";
     dbPath = appPath + "/db.json";
     
-    QDir().mkpath(appPath);
+    cameraPath = imagesPaths.first() + "/Field Assistant";
+    
+    if (!QDir(cameraPath).exists()) {
+        QDir().mkpath(cameraPath);
+    }
+    
+// #if defined (Q_OS_IOS)
+    csvPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
+//    #endif
+    
+#if defined(Q_OS_ANDROID)
+    csvPath = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).first();
+#endif
+    
+    csvPath.append("/exports");
+    
+    if (!QDir(csvPath).exists()) {
+        QDir().mkpath(csvPath);
+    }
     
     loadDb();
     loadTemplates();
+    
+    share = new ShareUtils(this);
 }
 
 QJSValue App::registerType(QQmlEngine* engine, QJSEngine *script) {
@@ -291,6 +310,10 @@ QString App::exportSet(const QString &fileName, int setId) {
     }
     
     zip.close();
+    
+    // No request ID, use JNI mode.
+    share->sendFile(file.fileName(), set.name, "application/zip", 0, false);
+    
     return file.fileName();
 }
 

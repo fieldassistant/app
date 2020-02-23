@@ -22,7 +22,8 @@ SOURCES += \
     app.cpp \
     csvwriter.cpp \
     entry.cpp \
-    main.cpp
+    main.cpp \
+    share/shareutils.cpp
 
 RESOURCES += qml.qrc \
     icons.qrc \
@@ -43,16 +44,10 @@ HEADERS += \
     androidfilter.h \
     app.h \
     csvwriter.h \
-    entry.h
+    entry.h \
+    share/shareutils.h
 
 DISTFILES += \
-    android/AndroidManifest.xml \
-    android/build.gradle \
-    android/gradle/wrapper/gradle-wrapper.jar \
-    android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew \
-    android/gradlew.bat \
-    android/res/values/libs.xml \
     templates/bugman.json \
     templates/rocks.json
 
@@ -66,6 +61,32 @@ unix!android: {
     LIBS += $$OUT_PWD/../libquazip.so
 }
 android: {
+    SOURCES += share/androidshareutils.cpp
+    HEADERS += share/androidshareutils.h
+    
+    DISTFILES += \
+        android/AndroidManifest.xml \
+        android/build.gradle \
+        android/gradle/wrapper/gradle-wrapper.jar \
+        android/gradle/wrapper/gradle-wrapper.properties \
+        android/gradlew \
+        android/gradlew.bat \
+        android/res/values/libs.xml \
+        android/res/xml/filepaths.xml \
+        android/src/org/ekkescorner/utils/QShareUtils.java \
+        android/src/org/ekkescorner/utils/QSharePathResolver.java
+
     LIBS += $$OUT_PWD/../libzlib_$${QT_ARCH}.so
     LIBS += $$OUT_PWD/../libquazip_$${QT_ARCH}.so
 }
+ios {
+    HEADERS += \
+        share/docviewcontroller.h \
+        share/iosshareutils.h \
+    
+    DISTFILES += \
+        ios/Info.plist \
+        ios/src/docviewcontroller.mm \
+        ios/src/iossshareutils.mm
+}
+

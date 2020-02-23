@@ -11,12 +11,7 @@ Item {
     property string set_id: entrySet.set_id
     
     function onExport() {
-        dialog.path = App.exportSet(fileNameField.text, root.set_id)
-        
-        if (dialog.path) {
-            dialog.open();
-        }
-        // or error?
+        App.exportSet(fileNameField.text, root.set_id)
     }
     
     Column {
@@ -44,9 +39,7 @@ Item {
             
             label: qsTr("File name")
             placeholder: root.name + ".zip"
-            
-            validMessage: qsTr("Exists")
-            valid: !App.exportPathExists(text)
+            required: true
             
             Binding on text {
                 property: "text"
@@ -61,31 +54,6 @@ Item {
             anchors.leftMargin: 30
             
             onClicked: onExport()
-        }
-    }
-    
-    Dialog {
-        id: dialog
-        title: qsTr("Exported %1").arg(name)
-        
-        property string path
-        
-        width: 320
-        standardButtons: Dialog.Ok
-        
-//        Keys.onBackPressed: {
-//            console.log("dialog back")
-//            event.accepted = true;
-//            visible ? reject() : close();
-//        }
-        
-        Text {
-            id: content
-            text: qsTr("File saved as: \"%1\"").arg(dialog.path)
-            elide: Text.ElideRight
-            font.pointSize: Theme.fontBody
-            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-            width: parent.width
         }
     }
 }
