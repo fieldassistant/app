@@ -48,6 +48,7 @@ HEADERS += \
     share/shareutils.h
 
 DISTFILES += \
+    README.md \
     templates/bugman.json \
     templates/rocks.json
 
