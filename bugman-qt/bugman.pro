@@ -57,11 +57,11 @@ ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 INCLUDEPATH += $$PWD/../quazip/quazip
 win32: LIBS += $$OUT_PWD/../zlib.dll $$OUT_PWD/../quazip.dll
 
-unix!android: {
+unix!android {
     LIBS += $$OUT_PWD/../libzlib.so
     LIBS += $$OUT_PWD/../libquazip.so
 }
-android: {
+android {
     SOURCES += share/androidshareutils.cpp
     HEADERS += share/androidshareutils.h
     
@@ -79,15 +79,45 @@ android: {
 
     LIBS += $$OUT_PWD/../libzlib_$${QT_ARCH}.so
     LIBS += $$OUT_PWD/../libquazip_$${QT_ARCH}.so
+
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+}
+macos {
+    LIBS += $$OUT_PWD/../libzlib.dylib
+    LIBS += $$OUT_PWD/../libquazip.dylib
 }
 ios {
     HEADERS += \
         share/docviewcontroller.h \
-        share/iosshareutils.h \
-    
+        share/iosshareutils.h
+
+    SOURCES += \
+        ios/src/iosshareutils.mm \
+        ios/src/docviewcontroller.mm
+
+    LIBS += $$OUT_PWD/../libzlib.a
+    LIBS += $$OUT_PWD/../libquazip.a
+
     DISTFILES += \
         ios/Info.plist \
         ios/src/docviewcontroller.mm \
-        ios/src/iossshareutils.mm
-}
+        ios/src/iosshareutils.mm
 
+    QMAKE_INFO_PLIST = ios/Info.plist
+    QMAKE_IOS_DEPLOYMENT_TARGET = 11.0
+    QMAKE_APPLE_TARGETED_DEVICE_FAMILY = 1,2
+    QMAKE_BUNDLE = bugman
+    QMAKE_TARGET_BUNDLE_PREFIX = com.gwillz
+
+    disable_warning.name = GCC_WARN_64_TO_32_BIT_CONVERSION
+    disable_warning.value = NO
+
+    QMAKE_MAC_XCODE_SETTINGS += disable_warning
+
+    MY_BUNDLE_ID.name = PRODUCT_BUNDLE_INDENTIFIER
+    MY_BUNDLE_ID.value = com.gwillz.bugman
+    QMAKE_MAC_XCODE_SETTINGS += MY_BUNDLE_ID
+
+    XCODEBUILD_FLAGS += -allowProvisioningUpdates
+
+}

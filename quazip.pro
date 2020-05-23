@@ -35,6 +35,12 @@ unix!android {
 android {
     LIBS += $$OUT_PWD/libzlib_$${QT_ARCH}.so
 }
+macos {
+    LIBS += $$OUT_PWD/libzlib.dylib
+}
+ios {
+    LIBS += $$OUT_PWD/libzlib.a
+}
 win32 {
     headers.path = $$PREFIX/include/quazip
     headers.files = $$HEADERS

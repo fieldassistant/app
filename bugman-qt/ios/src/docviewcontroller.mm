@@ -2,7 +2,7 @@
 // my blog about Qt for mobile: http://j.mp/qt-x
 // see also /COPYRIGHT and /LICENSE
 
-#import "DocViewController.h"
+#import "share/docviewcontroller.h"
 
 #include <QDebug>
 

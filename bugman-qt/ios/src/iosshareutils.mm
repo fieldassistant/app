@@ -2,7 +2,7 @@
 // my blog about Qt for mobile: http://j.mp/qt-x
 // see also /COPYRIGHT and /LICENSE
 
-#import "iosshareutils.h"
+#import "share/iosshareutils.h"
 
 #import <UIKit/UIKit.h>
 #import <QGuiApplication>
@@ -13,7 +13,7 @@
 
 #import <UIKit/UIDocumentInteractionController.h>
 
-#import "docviewcontroller.h"
+#import "share/docviewcontroller.h"
 
 IosShareUtils::IosShareUtils(QObject *parent) : PlatformShareUtils(parent)
 {
