@@ -3,7 +3,6 @@ import QtQuick.Controls 2.12
 import QtQuick.Window 2.12
 import QtMultimedia 5.12
 import QtGraphicalEffects 1.0
-import AndroidFilter 1.0
 
 Item {
     id: root
@@ -48,11 +47,6 @@ Item {
         root.capturing = true;
         camera.imageCapture.cancelCapture();
         camera.imageCapture.captureToLocation(App.cameraPath);
-    }
-    
-    // Remove this in 5.14.2 update.
-    AndroidFilter {
-        id: androidFilter
     }
     
     Camera {
@@ -184,7 +178,6 @@ Item {
         height: parent.height
         fillMode: VideoOutput.PreserveAspectCrop
         autoOrientation: true
-        filters: [androidFilter]
         
         states: [
             State {

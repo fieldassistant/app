@@ -3,7 +3,6 @@
 #include <QDebug>
 #include "app.h"
 #include "entry.h"
-#include "androidfilter.h"
 
 #ifdef Q_OS_ANDROID
 #include <QtAndroid>
@@ -20,7 +19,6 @@ int main(int argc, char *argv[]) {
     requestAndroidPermissions();
 #endif
     
-    qmlRegisterType<AndroidFilter>("AndroidFilter", 1, 0, "AndroidFilter");
     
     QQmlApplicationEngine engine;
     
