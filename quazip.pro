@@ -29,7 +29,7 @@ unix {
     
     INSTALLS += headers
 }
-unix!android {
+unix:!android {
     LIBS += $$OUT_PWD/libzlib.so
 }
 android {
