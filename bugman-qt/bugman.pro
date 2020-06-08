@@ -53,11 +53,14 @@ DISTFILES += \
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
 INCLUDEPATH += $$PWD/../quazip/quazip
-win32: LIBS += $$OUT_PWD/../zlib.dll $$OUT_PWD/../quazip.dll
 
+win32 {
+    LIBS += $$OUT_PWD/../zlib/zlib.dll
+    LIBS += $$OUT_PWD/../quazip/quazip.dll
+}
 unix:!android {
-    LIBS += $$OUT_PWD/../libzlib.so
-    LIBS += $$OUT_PWD/../libquazip.so
+    LIBS += $$OUT_PWD/../zlib/libzlib.so
+    LIBS += $$OUT_PWD/../quazip/libquazip.so
 }
 android {
     SOURCES += share/androidshareutils.cpp
@@ -75,14 +78,12 @@ android {
         android/src/org/ekkescorner/utils/QShareUtils.java \
         android/src/org/ekkescorner/utils/QSharePathResolver.java
 
-    LIBS += $$OUT_PWD/../libzlib_$${QT_ARCH}.so
-    LIBS += $$OUT_PWD/../libquazip_$${QT_ARCH}.so
-
-    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+    LIBS += $$OUT_PWD/../zlib/libzlib_$${QT_ARCH}.so
+    LIBS += $$OUT_PWD/../quazip/libquazip_$${QT_ARCH}.so
 }
 macos {
-    LIBS += $$OUT_PWD/../libzlib.dylib
-    LIBS += $$OUT_PWD/../libquazip.dylib
+    LIBS += $$OUT_PWD/../zlib/libzlib.dylib
+    LIBS += $$OUT_PWD/../quazip/libquazip.dylib
 }
 ios {
     HEADERS += \
@@ -93,8 +94,8 @@ ios {
         ios/src/iosshareutils.mm \
         ios/src/docviewcontroller.mm
 
-    LIBS += $$OUT_PWD/../libzlib.a
-    LIBS += $$OUT_PWD/../libquazip.a
+    LIBS += $$OUT_PWD/../zlib/libzlib.a
+    LIBS += $$OUT_PWD/../quazip/libquazip.a
 
     DISTFILES += \
         ios/Info.plist \

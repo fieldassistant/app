@@ -9,6 +9,7 @@ QMAKE_CFLAGS += \
     -Wno-implicit-function-declaration
 
 TARGET = zlib
+DESTDIR = zlib
 
 HEADERS = \
    $$PWD/zlib/crc32.h \

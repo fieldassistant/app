@@ -23,6 +23,9 @@ DEFINES += QT_NO_CAST_TO_ASCII
 # Input
 include(quazip/quazip/quazip.pri)
 
+TARGET = quazip
+DESTDIR = quazip
+
 unix {
     headers.path = $$PREFIX/include/quazip
     headers.files = $$HEADERS
@@ -30,23 +33,23 @@ unix {
     INSTALLS += headers
 }
 unix:!android {
-    LIBS += $$OUT_PWD/libzlib.so
+    LIBS += $$OUT_PWD/zlib/libzlib.so
 }
 android {
-    LIBS += $$OUT_PWD/libzlib_$${QT_ARCH}.so
+    LIBS += $$OUT_PWD/zlib/libzlib_$${QT_ARCH}.so
 }
 macos {
-    LIBS += $$OUT_PWD/libzlib.dylib
+    LIBS += $$OUT_PWD/zlib/libzlib.dylib
 }
 ios {
-    LIBS += $$OUT_PWD/libzlib.a
+    LIBS += $$OUT_PWD/zlib/libzlib.a
 }
 win32 {
     headers.path = $$PREFIX/include/quazip
     headers.files = $$HEADERS
     
     INSTALLS += headers
-    LIBS += $$OUT_PWD/zlib.dll
+    LIBS += $$OUT_PWD/zlib/zlib.dll
     
     # workaround for qdatetime.h macro bug
     DEFINES += NOMINMAX
