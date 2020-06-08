@@ -57,10 +57,18 @@ INCLUDEPATH += $$PWD/../quazip/quazip
 win32 {
     LIBS += $$OUT_PWD/../zlib/zlib.dll
     LIBS += $$OUT_PWD/../quazip/quazip.dll
+
+    quazip.path = $$OUT_PWD/../quazip/quazip.dll
+    zlib.path = $$OUT_PWD/../zlib/zlib.dll
+    INSTALLS += quazip zlib
 }
 unix:!android {
-    LIBS += $$OUT_PWD/../zlib/libzlib.so
-    LIBS += $$OUT_PWD/../quazip/libquazip.so
+    LIBS += -L"$$OUT_PWD/../zlib" -lzlib
+    LIBS += -L"$$OUT_PWD/../quazip" -lquazip
+
+    quazip.path = $$OUT_PWD/../quazip/libquazip.so
+    zlib.path = $$OUT_PWD/../zlib/libzlib.so
+    INSTALLS += quazip zlib
 }
 android {
     SOURCES += share/androidshareutils.cpp
@@ -80,10 +88,18 @@ android {
 
     LIBS += $$OUT_PWD/../zlib/libzlib_$${QT_ARCH}.so
     LIBS += $$OUT_PWD/../quazip/libquazip_$${QT_ARCH}.so
+
+    quazip.path = $$OUT_PWD/../quazip/libquazip_$${QT_ARCH}.so
+    zlib.path = $$OUT_PWD/../zlib/libzlib_$${QT_ARCH}.so
+    INSTALLS += quazip zlib
 }
 macos {
     LIBS += $$OUT_PWD/../zlib/libzlib.dylib
     LIBS += $$OUT_PWD/../quazip/libquazip.dylib
+    
+    quazip.path = $$OUT_PWD/../quazip/libquazip.dylib
+    zlib.path = $$OUT_PWD/../zlib/libzlib.dylib
+    INSTALLS += quazip zlib
 }
 ios {
     HEADERS += \
@@ -118,5 +134,4 @@ ios {
     QMAKE_MAC_XCODE_SETTINGS += MY_BUNDLE_ID
 
     XCODEBUILD_FLAGS += -allowProvisioningUpdates
-
 }
