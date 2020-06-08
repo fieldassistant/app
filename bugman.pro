@@ -1,14 +1,14 @@
 TEMPLATE = subdirs
 
-#SUBDIRS += \
-#    bugman-qt/bugman.pro \
-#    quazip/quazip/quazip.pro \
-#    zlib.pro
-
 SUBDIRS += \
-    zlib.pro \
-    quazip.pro \
-    bugman-qt/bugman.pro
+    zlib \
+    quazip \
+    bugman-qt
 
-quazip.depends = zlib.pro
-bugman.depends = quazip.pro
+zlib.file = zlib.pro
+
+quazip.file = quazip.pro
+quazip.depends = zlib
+
+bugman-qt.file = bugman-qt/bugman.pro
+bugman-qt.depends = quazip
