@@ -26,7 +26,17 @@ Rectangle {
     border.width: 0
     radius: 5
     clip: true
-        
+    
+    Timer {
+        id: timer
+        interval: 2000
+        running: false
+        repeat: false
+        onTriggered: {
+            swiper.swipe.close()
+        }
+    }
+    
     Image {
         id: handle
         height: parent.height / 3
@@ -45,6 +55,10 @@ Rectangle {
         anchors.left: handle.right
         anchors.leftMargin: 10
         anchors.right: parent.right
+        
+        swipe.onOpened: {
+            timer.start()
+        }
         
         swipe.right: Item {
             id: controls
@@ -73,7 +87,10 @@ Rectangle {
                     text: qsTr("Edit")
                     icon.source: "icons/pencil.svg"
                     width: height
-                    onClicked: editDialog.open()
+                    onClicked: {
+                        editDialog.open()
+                        timer.stop()
+                    }
                 }
                 
                 Button {
@@ -82,7 +99,10 @@ Rectangle {
                     text: qsTr("Delete")
                     icon.source: "icons/trash.svg"
                     width: height
-                    onClicked: deleteDialog.open()
+                    onClicked: {
+                        deleteDialog.open()
+                        timer.stop()
+                    }
                 }
             }
         }
