@@ -21,25 +21,25 @@ static App* instance = nullptr;
 App::App(QObject *parent)
         : QObject(parent) {
     
-    appPath = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).last();
+    appPath = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).first();
     imagesPaths = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation);
-    dbPath = appPath + "/db.json";
+    csvPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
     
+#if defined(Q_OS_ANDROID)
+    QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).last();
+#endif
+    
+    dbPath = appPath + "/db.json";
     cameraPath = imagesPaths.first() + "/Field Assistant";
+    csvPath.append("/Field Assistant");
+    
+    if (!QDir(appPath).exists()) {
+        QDir().mkpath(appPath);
+    }
     
     if (!QDir(cameraPath).exists()) {
         QDir().mkpath(cameraPath);
     }
-    
-// #if defined (Q_OS_IOS)
-    csvPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation).first();
-//    #endif
-    
-#if defined(Q_OS_ANDROID)
-    csvPath = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).first();
-#endif
-    
-    csvPath.append("/exports");
     
     if (!QDir(csvPath).exists()) {
         QDir().mkpath(csvPath);
