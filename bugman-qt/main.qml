@@ -41,25 +41,38 @@ ApplicationWindow {
             nav.pop();
         }
         
-//        HomeView {
-//            id: homeView
-//        }
-        
-//        AboutView {
-//            id: aboutView
-//        }
-        
-//        EntryEditView {
-//            id: entryEditView
-//        }
-        
-//        SetEditView {
-//            id: setEditView
-//        }
-        
-//        SetSaveView {
-//            id: saveSetView
-//        }
+        pushEnter: Transition {
+           PropertyAnimation {
+               property: "opacity"
+               from: 0
+               to: 1
+               duration: 200
+           }
+       }
+       pushExit: Transition {
+           PropertyAnimation {
+               property: "opacity"
+               from: 1
+               to: 0
+               duration: 200
+           }
+       }
+       popEnter: Transition {
+           PropertyAnimation {
+               property: "opacity"
+               from: 0
+               to: 1
+               duration: 200
+           }
+       }
+       popExit: Transition {
+           PropertyAnimation {
+               property: "opacity"
+               from: 1
+               to: 0
+               duration: 200
+           }
+       }
     }
 }
 
