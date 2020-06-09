@@ -5,65 +5,65 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-#define JSON_IS_LIST(field) json.contains(#field) && json[#field].isArray()
+#define JSON_IS_LIST(json, field) json.contains(#field) && json[#field].isArray()
 
-#define JSON_IS_OBJECT(field) json.contains(#field) && json[#field].isObject()
+#define JSON_IS_OBJECT(json, field) json.contains(#field) && json[#field].isObject()
 
-#define JSON_IS_STRING(field) json.contains(#field) && json[#field].isString()
+#define JSON_IS_STRING(json, field) json.contains(#field) && json[#field].isString()
 
-#define JSON_IS_NUMBER(field) json.contains(#field) && json[#field].isDouble()
+#define JSON_IS_NUMBER(json, field) json.contains(#field) && json[#field].isDouble()
 
-#define JSON_READ_STRING(field) \
-    if (JSON_IS_STRING(field)) \
+#define JSON_READ_STRING(json, field) \
+    if (JSON_IS_STRING(json, field)) \
         field = json[#field].toString(); \
 //    else qDebug() << #field " is not a string.";
 
-#define JSON_READ_INT(field) \
-    if (JSON_IS_NUMBER(field)) \
+#define JSON_READ_INT(json, field) \
+    if (JSON_IS_NUMBER(json, field)) \
         field = json[#field].toInt(); \
 //    else qDebug() << #field " is not a number (int).";
 
-#define JSON_READ_REAL(field) \
-    if (JSON_IS_NUMBER(field)) \
+#define JSON_READ_REAL(json, field) \
+    if (JSON_IS_NUMBER(json, field)) \
         field = json[#field].toDouble(); \
 //    else qDebug() << #field " is not a number (real).";
 
-#define JSON_READ_OBJECT(field, Type) \
-    if (JSON_IS_OBJECT(field)) { \
+#define JSON_READ_OBJECT(json, field, Type) \
+    if (JSON_IS_OBJECT(json, field)) { \
         field = Type(); \
         field.read(json[#field].toObject()); \
     } \
 //    else qDebug() << #field " is not an object.";
 
-#define JSON_FOR_LIST(field, value) \
-    if (JSON_IS_LIST(field)) \
+#define JSON_FOR_LIST(json, field, value) \
+    if (JSON_IS_LIST(json, field)) \
         for (QJsonValue value : json[#field].toArray())
 
-#define JSON_WRITE(field) json[#field] = field
+#define JSON_WRITE(json, field) json[#field] = field
 
-#define JSON_WRITE_OBJECT(field) \
+#define JSON_WRITE_OBJECT(json, field) \
     { \
         QJsonObject object; \
         field.write(object); \
         json[#field] = object; \
     }
 
-#define OBJECT_READ_INT(target, field) \
+#define OBJECT_READ_INT(object, target, field) \
     if (object.contains(#field)) { \
         (target).field = object[#field].toInt(); \
     }
 
-#define OBJECT_READ_REAL(target, field) \
+#define OBJECT_READ_REAL(object, target, field) \
     if (object.contains(#field)) { \
         (target).field = object[#field].toReal(); \
     }
 
-#define OBJECT_READ_STRING(target, field) \
+#define OBJECT_READ_STRING(object, target, field) \
     if (object.contains(#field)) { \
         (target).field = object[#field].toString(); \
     }
 
-#define OBJECT_FOR_LIST(field, value) \
+#define OBJECT_FOR_LIST(object, field, value) \
     if (object.contains(#field)) \
         for (QVariant value : object[#field].toList())
 
@@ -81,23 +81,23 @@ bool EntryPosition::operator==(const EntryPosition &other) const {
 }
 
 void EntryPosition::read(const QJsonObject &json) {
-    JSON_READ_REAL(latitude);
-    JSON_READ_REAL(longitude);
-    JSON_READ_REAL(altitude);
+    JSON_READ_REAL(json, latitude);
+    JSON_READ_REAL(json, longitude);
+    JSON_READ_REAL(json, altitude);
 }
 
 void EntryPosition::write(QJsonObject &json) const {
-    JSON_WRITE(latitude);
-    JSON_WRITE(longitude);
-    JSON_WRITE(altitude);
+    JSON_WRITE(json, latitude);
+    JSON_WRITE(json, longitude);
+    JSON_WRITE(json, altitude);
 }
 
 EntryPosition EntryPosition::fromObject(const QVariantMap &object) {
     EntryPosition position;
     
-    OBJECT_READ_REAL(position, latitude);
-    OBJECT_READ_REAL(position, longitude);
-    OBJECT_READ_REAL(position, altitude);
+    OBJECT_READ_REAL(object, position, latitude);
+    OBJECT_READ_REAL(object, position, longitude);
+    OBJECT_READ_REAL(object, position, altitude);
     
     return position;
 }
@@ -115,26 +115,26 @@ bool EntryField::operator==(const EntryField &other) const {
 }
 
 void EntryField::read(const QJsonObject &json) {
-    JSON_READ_STRING(name);
-    JSON_READ_STRING(value);
-    JSON_READ_STRING(type);
+    JSON_READ_STRING(json, name);
+    JSON_READ_STRING(json, value);
+    JSON_READ_STRING(json, type);
 }
 
 void EntryField::write(QJsonObject &json) const {
-    JSON_WRITE(name);
-    JSON_WRITE(type);
+    JSON_WRITE(json, name);
+    JSON_WRITE(json, type);
     
     if (!value.isEmpty()) {
-        JSON_WRITE(value);
+        JSON_WRITE(json, value);
     }
 }
 
 EntryField EntryField::fromObject(const QVariantMap &object) {
     EntryField field;
     
-    OBJECT_READ_STRING(field, name);
-    OBJECT_READ_STRING(field, type);
-    OBJECT_READ_STRING(field, value);
+    OBJECT_READ_STRING(object, field, name);
+    OBJECT_READ_STRING(object, field, type);
+    OBJECT_READ_STRING(object, field, value);
     
     return field;
 }
@@ -171,22 +171,22 @@ QMap<QString, EntryField> Entry::getFieldMap() const {
 }
 
 void Entry::read(const QJsonObject &json) {
-    JSON_READ_INT(entry_id);
-    JSON_READ_INT(entry_set_id);
-    JSON_READ_STRING(voucher);
-    JSON_READ_OBJECT(position, EntryPosition);
-    JSON_READ_STRING(timestamp);
-    JSON_READ_STRING(collector);
+    JSON_READ_INT(json, entry_id);
+    JSON_READ_INT(json, entry_set_id);
+    JSON_READ_STRING(json, voucher);
+    JSON_READ_OBJECT(json, position, EntryPosition);
+    JSON_READ_STRING(json, timestamp);
+    JSON_READ_STRING(json, collector);
     
     images.clear();
-    JSON_FOR_LIST(images, value) {
+    JSON_FOR_LIST(json, images, value) {
         if (value.isString()) {
             images.append(value.toString());
         }
     }
     
     fields.clear();
-    JSON_FOR_LIST(fields, value) {
+    JSON_FOR_LIST(json, fields, value) {
         if (value.isObject()) {
             EntryField item;
             item.read(value.toObject());
@@ -197,12 +197,12 @@ void Entry::read(const QJsonObject &json) {
 
 void Entry::write(QJsonObject &json) const {
     
-    JSON_WRITE(entry_id);
-    JSON_WRITE(entry_set_id);
-    JSON_WRITE(voucher);
-    JSON_WRITE_OBJECT(position);
-    JSON_WRITE(timestamp);
-    JSON_WRITE(collector);
+    JSON_WRITE(json, entry_id);
+    JSON_WRITE(json, entry_set_id);
+    JSON_WRITE(json, voucher);
+    JSON_WRITE_OBJECT(json, position);
+    JSON_WRITE(json, timestamp);
+    JSON_WRITE(json, collector);
     
     {
         QJsonArray array;
@@ -226,21 +226,21 @@ void Entry::write(QJsonObject &json) const {
 Entry Entry::fromObject(const QVariantMap &object) {
     Entry entry;
     
-    OBJECT_READ_INT(entry, entry_id);
-    OBJECT_READ_INT(entry, entry_set_id);
-    OBJECT_READ_STRING(entry, timestamp);
-    OBJECT_READ_STRING(entry, voucher);
-    OBJECT_READ_STRING(entry, collector);
+    OBJECT_READ_INT(object, entry, entry_id);
+    OBJECT_READ_INT(object, entry, entry_set_id);
+    OBJECT_READ_STRING(object, entry, timestamp);
+    OBJECT_READ_STRING(object, entry, voucher);
+    OBJECT_READ_STRING(object, entry, collector);
     
     if (object.contains("position")) {
         entry.position = EntryPosition::fromObject(object["position"].toMap());
     }
     
-    OBJECT_FOR_LIST(images, item) {
+    OBJECT_FOR_LIST(object, images, item) {
         entry.images.append(item.toString());
     }
     
-    OBJECT_FOR_LIST(fields, item) {
+    OBJECT_FOR_LIST(object, fields, item) {
         EntryField field = item.canConvert<EntryField>()
             ? item.value<EntryField>()
             : EntryField::fromObject(item.toMap());
@@ -288,14 +288,14 @@ QString EntrySet::getNextVoucher() const {
 }
 
 void EntrySet::read(const QJsonObject &json) {
-    JSON_READ_INT(set_id);
-    JSON_READ_STRING(name);
-    JSON_READ_STRING(collector);
-    JSON_READ_STRING(voucher_format);
-    JSON_READ_INT(entry_count);
+    JSON_READ_INT(json, set_id);
+    JSON_READ_STRING(json, name);
+    JSON_READ_STRING(json, collector);
+    JSON_READ_STRING(json, voucher_format);
+    JSON_READ_INT(json, entry_count);
     
     fields.clear();
-    JSON_FOR_LIST(fields, value) {
+    JSON_FOR_LIST(json, fields, value) {
         if (value.isObject()) {
             EntryField field;
             field.read(value.toObject());
@@ -304,7 +304,7 @@ void EntrySet::read(const QJsonObject &json) {
     }
     
     entries.clear();
-    JSON_FOR_LIST(entries, value) {
+    JSON_FOR_LIST(json, entries, value) {
         if (value.isObject()) {
             Entry entry;
             entry.read(value.toObject());
@@ -315,11 +315,11 @@ void EntrySet::read(const QJsonObject &json) {
 
 void EntrySet::write(QJsonObject &json) const {
     
-    JSON_WRITE(set_id);
-    JSON_WRITE(name);
-    JSON_WRITE(collector);
-    JSON_WRITE(voucher_format);
-    JSON_WRITE(entry_count);
+    JSON_WRITE(json, set_id);
+    JSON_WRITE(json, name);
+    JSON_WRITE(json, collector);
+    JSON_WRITE(json, voucher_format);
+    JSON_WRITE(json, entry_count);
     
     {
         QJsonArray array;
@@ -344,12 +344,12 @@ void EntrySet::write(QJsonObject &json) const {
 EntrySet EntrySet::fromObject(const QVariantMap &object) {
     EntrySet set;
     
-    OBJECT_READ_INT(set, set_id);
-    OBJECT_READ_STRING(set, name);
-    OBJECT_READ_STRING(set, collector);
-    OBJECT_READ_STRING(set, voucher_format);
+    OBJECT_READ_INT(object, set, set_id);
+    OBJECT_READ_STRING(object, set, name);
+    OBJECT_READ_STRING(object, set, collector);
+    OBJECT_READ_STRING(object, set, voucher_format);
     
-    OBJECT_FOR_LIST(fields, item) {
+    OBJECT_FOR_LIST(object, fields, item) {
         EntryField field = item.canConvert<EntryField>()
             ? item.value<EntryField>()
             : EntryField::fromObject(item.toMap());
@@ -391,12 +391,12 @@ int EntryDatabase::setSet(const EntrySet &set) {
 }
 
 int EntryDatabase::read(const QJsonObject &json) {
-    JSON_READ_INT(entry_count);
-    JSON_READ_INT(entry_set_count);
+    JSON_READ_INT(json, entry_count);
+    JSON_READ_INT(json, entry_set_count);
     
     int entryCount = 0;
     
-    JSON_FOR_LIST(data, value) {
+    JSON_FOR_LIST(json, data, value) {
         if (value.isObject()) {
             EntrySet set;
             set.read(value.toObject());
@@ -411,8 +411,8 @@ int EntryDatabase::read(const QJsonObject &json) {
 
 void EntryDatabase::write(QJsonObject &json) const {
     
-    JSON_WRITE(entry_count);
-    JSON_WRITE(entry_set_count);
+    JSON_WRITE(json, entry_count);
+    JSON_WRITE(json, entry_set_count);
     
     QJsonArray data;
     
@@ -439,11 +439,11 @@ bool EntryTemplate::operator==(const EntryTemplate &other) const {
 }
 
 void EntryTemplate::read(const QJsonObject &json) {
-    JSON_READ_STRING(name);
-    JSON_READ_STRING(author);
+    JSON_READ_STRING(json, name);
+    JSON_READ_STRING(json, author);
     
     fields.clear();
-    JSON_FOR_LIST(fields, value) {
+    JSON_FOR_LIST(json, fields, value) {
         if (value.isObject()) {
             EntryField field;
             field.read(value.toObject());
@@ -453,8 +453,8 @@ void EntryTemplate::read(const QJsonObject &json) {
 }
 
 void EntryTemplate::write(QJsonObject &json) const {
-    JSON_WRITE(name);
-    JSON_WRITE(author);
+    JSON_WRITE(json, name);
+    JSON_WRITE(json, author);
     
     QJsonArray array;
     for (EntryField field : fields) {
