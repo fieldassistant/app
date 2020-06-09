@@ -47,12 +47,13 @@ Rectangle {
         anchors.right: parent.right
         
         swipe.right: Item {
+            id: controls
             anchors.right: parent.right
             height: root.implicitHeight
             width: row.implicitWidth
             
             Rectangle {
-                color: Theme.colorBee
+                color: Theme.colorBrick
                 radius: 5
                 anchors.fill: parent
                 anchors.leftMargin: -10
@@ -119,11 +120,13 @@ Rectangle {
             root.name = name
             root.type = type
             root.edited()
+            swiper.swipe.close()
         }
         
         onRejected: {
             name = root.name
             type = root.type
+            swiper.swipe.close()
         }
     }
     
@@ -131,7 +134,11 @@ Rectangle {
         id: deleteDialog
         title: "Delete Field"
         target: root.name
-        onAccepted: root.remove()
+        onAccepted: {
+            root.remove()
+            swiper.swipe.close()
+        }
+        onRejected: swiper.swipe.close()
     }
 }
 
