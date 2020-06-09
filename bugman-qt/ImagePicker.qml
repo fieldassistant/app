@@ -21,8 +21,8 @@ Frame {
     }
     
     function close() {
-        if (camera.fullscreen) {
-            camera.close()
+        if (camera.item && camera.item.fullscreen) {
+            camera.item.close()
         }
         else {
             enabled = false;
@@ -139,13 +139,17 @@ Frame {
                 columns: Math.floor(width / 100)
                 property int itemWidth: (width + spacing) / columns - spacing
                 
-                Camera {
+                Loader {
                     id: camera
-                    width: grid.itemWidth
-                    height: width
-                    z: 15
-                    layer.enabled: true
-                    onCaptured: root.addImage(image)
+                    active: root.enabled
+                    
+                    sourceComponent: Camera {
+                        width: grid.itemWidth
+                        height: width
+                        z: 15
+                        layer.enabled: true
+                        onCaptured: root.addImage(image)
+                    }
                 }
                 
                 Repeater {
