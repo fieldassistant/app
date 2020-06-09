@@ -11,5 +11,7 @@
         <file>icons/cross.svg</file>
         <file>icons/tick.svg</file>
         <file>icons/focus.svg</file>
+        <file>icons/grip.svg</file>
+        <file>icons/grip-2.svg</file>
     </qresource>
 </RCC>

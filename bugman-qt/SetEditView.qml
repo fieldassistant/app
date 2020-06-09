@@ -206,34 +206,29 @@ Item {
         MouseArea {
             id: dragArea
             
-            property bool held: false
-            
             height: field.height
             
             anchors.right: parent.right
             anchors.left: parent.left
             
-            drag.target: held ? field : undefined
+            drag.target: pressed ? field : undefined
             drag.axis: Drag.YAxis
             drag.minimumY: parent.y + height / 2 + 10
             drag.maximumY: parent.height - height / 2
-            
-            onPressAndHold: { held = true }
-            onReleased: { held = false }
             
             TemplateField {
                 id: field
                 
                 Drag.hotSpot.x: width / 2
                 Drag.hotSpot.y: height / 2
-                Drag.active: dragArea.held
+                Drag.active: dragArea.pressed
                 Drag.source: dragArea
                 
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 width: dragArea.width
                 
-                highlighted: dragArea.held
+                highlighted: dragArea.pressed
                 hovered: dragArea.containsMouse
                 
                 name: modelData.name
@@ -252,7 +247,7 @@ Item {
                 
                 states: [
                     State {
-                        when: dragArea.held
+                        when: dragArea.pressed
                         
                         ParentChange {
                             target: field

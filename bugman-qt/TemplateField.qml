@@ -14,10 +14,8 @@ Rectangle {
     property bool highlighted: false
     property bool hovered: false
     
-    implicitHeight: wrapper.implicitHeight + 20
-    implicitWidth: wrapper.implicitWidth + 20
-    border.width: 0
-    radius: 5
+    implicitHeight: swiper.implicitHeight
+    implicitWidth: swiper.implicitWidth + 20 + handle.width
     
     color: highlighted
         ? Theme.colorBrick
@@ -25,23 +23,80 @@ Rectangle {
         ? Theme.colorCloud
         : Theme.colorPutty
     
-    Behavior on color {
-        ColorAnimation { duration: 100 }
+    border.width: 0
+    radius: 5
+    clip: true
+        
+    Image {
+        id: handle
+        height: parent.height / 3
+        width: height
+        
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        
+        source: "icons/grip-2.svg"
     }
     
-    Item {
-        id: wrapper
-        anchors.fill: parent
-        anchors.margins: 10
+    SwipeDelegate {
+        id: swiper
         
-        implicitHeight: column.height
-        implicitWidth: column.implicitWidth + 40 + row.width
+        anchors.left: handle.right
+        anchors.leftMargin: 10
+        anchors.right: parent.right
         
-        Column {
-            id: column
-            anchors.left: parent.left
-            anchors.right: row.left
+        swipe.right: Item {
+            anchors.right: parent.right
+            height: root.implicitHeight
+            width: row.implicitWidth
             
+            Rectangle {
+                color: Theme.colorBee
+                radius: 5
+                anchors.fill: parent
+                anchors.leftMargin: -10
+            }
+
+            Row {
+                id: row
+                anchors.verticalCenter: parent.verticalCenter
+                
+                leftPadding: 10
+                rightPadding: 10
+                spacing: 15
+                
+                Button {
+                    display: AbstractButton.IconOnly
+                    flat: true
+                    text: qsTr("Edit")
+                    icon.source: "icons/pencil.svg"
+                    width: height
+                    onClicked: editDialog.open()
+                }
+                
+                Button {
+                    display: AbstractButton.IconOnly
+                    flat: true
+                    text: qsTr("Delete")
+                    icon.source: "icons/trash.svg"
+                    width: height
+                    onClicked: deleteDialog.open()
+                }
+            }
+        }
+        
+        background: Rectangle {
+            width: parent.width
+            height: parent.height
+            border.width: 0
+            radius: 5
+            
+            color: root.color
+        }
+        
+        contentItem: Column {
+            id: column
             
             Text {
                 font.pointSize: Theme.fontBody
@@ -50,30 +105,6 @@ Rectangle {
             Text {
                 font.pointSize: Theme.fontSmall
                 text: root.type
-            }
-        }
-        
-        Row {
-            id: row
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
-            
-            Button {
-                display: AbstractButton.IconOnly
-                flat: true
-                text: qsTr("Edit")
-                icon.source: "icons/pencil.svg"
-                width: height
-                onClicked: editDialog.open()
-            }
-            
-            Button {
-                display: AbstractButton.IconOnly
-                flat: true
-                text: qsTr("Delete")
-                icon.source: "icons/trash.svg"
-                width: height
-                onClicked: deleteDialog.open()
             }
         }
     }
@@ -104,8 +135,10 @@ Rectangle {
     }
 }
 
+
+
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:100;width:640}
+    D{i:0;autoSize:true;height:70;width:640}
 }
 ##^##*/
