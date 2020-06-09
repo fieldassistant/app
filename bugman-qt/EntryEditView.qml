@@ -20,9 +20,8 @@ Item {
     property var position: entry.position || gps.position.coordinate
     property string timestamp: entry.timestamp || +new Date() + ""
     property string collector: entry.collector || entrySet.collector
-    property var images: entry.images ? entry.images.slice(0) : []
-    property var fields: entry.fields ? entry.fields.slice(0) : []
-//    EntryModel.data[0].entries[0].fields
+    property var images: (entry.images || []).slice(0)
+    property var fields: (entry.fields || entrySet.fields).slice(0)
     
     property bool isEditing: !entry
     property int invalid: 0
