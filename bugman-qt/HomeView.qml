@@ -19,9 +19,12 @@ Item {
         Repeater {
             id: repeater
             model: App.sets
-
-            delegate: EntrySet {
-                entrySet: modelData
+            
+            Loader {
+                active: SwipeView.isCurrentItem || SwipeView.isNextItem || SwipeView.isPreviousItem
+                sourceComponent: EntrySet {
+                    entrySet: modelData
+                }
             }
         }
         
