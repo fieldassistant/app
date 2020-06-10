@@ -10,6 +10,7 @@ class QJSValue;
 class QJSEngine;
 class QFileSystemWatcher;
 class ShareUtils;
+class QMimeDatabase;
 
 typedef struct {
     QString name;
@@ -26,6 +27,7 @@ class App : public QObject {
     Q_PROPERTY(QString cameraPath MEMBER cameraPath CONSTANT)
     
     QFileSystemWatcher* imageWatcher;
+    QMimeDatabase* mimes;
     
     QString appPath;
     QStringList imagesPaths;

@@ -12,6 +12,7 @@
 #include <QJsonObject>
 #include <QDateTime>
 #include <QRegularExpression>
+#include <QMimeDatabase>
 #include <quazipfile.h>
 #include <JlCompress.h>
 #include "share/shareutils.h"
@@ -48,6 +49,14 @@ App::App(QObject *parent)
     loadDb();
     loadTemplates();
     
+    imageWatcher = new QFileSystemWatcher(this);
+    imageWatcher->addPaths(imagesPaths);
+    
+    connect(imageWatcher, &QFileSystemWatcher::fileChanged,
+            this, &App::imagesChanged);
+    
+    mimes = new QMimeDatabase();
+    
     share = new ShareUtils(this);
 }
 
@@ -64,13 +73,7 @@ void App::registerSingleton(QQmlEngine *qmlEngine) {
 }
 
 void App::watchImages() {
-    if (imageWatcher != nullptr) delete imageWatcher;
     
-    imageWatcher = new QFileSystemWatcher(this);
-    imageWatcher->addPaths(imagesPaths);
-    
-    connect(imageWatcher, &QFileSystemWatcher::fileChanged,
-            this, &App::imagesChanged);
 }
 
 void App::loadDb() {
@@ -137,16 +140,45 @@ void App::loadTemplates() {
     qDebug() << "Templates:" << templates.size();
 }
 
+void getFiles(QFileInfoList &files, const QString path, int depth = 1) {
+    QDir dir(path);
+    
+    files.append(dir.entryInfoList(QDir::Files));
+    
+    if (depth == 0) return;
+    
+    for (QString subPath : dir.entryList(QDir::Dirs)) {
+        if (subPath.startsWith(".")) continue;
+        
+        qDebug() << "Diving into: " << path << subPath;
+        getFiles(files, dir.absoluteFilePath(subPath), depth - 1);
+    }
+}
+
 QStringList App::getImages() const {
-    QStringList paths;
+    QFileInfoList files;
     
     for (QString dirPath : imagesPaths) {
-        QDir dir(dirPath);
-        
-        for (QString path : dir.entryList(QDir::Files, QDir::Time)) {
-            paths.append("file:///" + dir.absoluteFilePath(path));
-        }
+        qDebug() << "Searching for images in:" << dirPath;
+        getFiles(files, dirPath);
     }
+    
+    std::sort(files.begin(), files.end(), [](const QFileInfo &a, const QFileInfo &b) {
+        return a.lastModified() > b.lastModified();
+    });
+    
+    QStringList paths;
+    
+    for (QFileInfo info : files) {
+        QMimeType fileType = mimes->mimeTypeForFile(info);
+        
+        if (info.fileName().startsWith(".")) continue;
+        if (!fileType.name().startsWith("image/")) continue;
+        
+        paths.append("file:///" + info.absoluteFilePath());
+    }
+    
+    paths.removeDuplicates();
     
     return paths;
 }
