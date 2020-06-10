@@ -53,11 +53,13 @@ App::App(QObject *parent)
     imageWatcher->addPaths(imagesPaths);
     
     connect(imageWatcher, &QFileSystemWatcher::fileChanged,
-            this, &App::imagesChanged);
+            this, &App::onImageChanged);
     
     mimes = new QMimeDatabase();
     
     share = new ShareUtils(this);
+    
+    images = getImages();
 }
 
 QJSValue App::registerType(QQmlEngine* engine, QJSEngine *script) {
@@ -72,8 +74,24 @@ void App::registerSingleton(QQmlEngine *qmlEngine) {
     rootContext->setContextProperty("App", instance);
 }
 
-void App::watchImages() {
+void App::onImageChanged(QString path) {
+    QFileInfo info(path);
     
+    // Add if it's an image type.
+    if (info.exists()) {
+        QMimeType fileType = mimes->mimeTypeForFile(info);
+        qDebug() << "Adding image:" << path << fileType.name();
+        
+        if (fileType.name().startsWith("image/") &&
+                !images.contains("files:///" + path)) {
+            images.prepend("files:///" + path);
+        }
+    }
+    else {
+        qDebug() << "Removing image:" << path;
+        // Remove from images.
+        images.removeOne("file:///" + path);
+    }
 }
 
 void App::loadDb() {

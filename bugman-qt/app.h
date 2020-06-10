@@ -21,7 +21,7 @@ typedef struct {
 class App : public QObject {
     Q_OBJECT
     
-    Q_PROPERTY(QStringList images READ getImages NOTIFY imagesChanged)
+    Q_PROPERTY(QStringList images MEMBER images)
     Q_PROPERTY(QList<EntrySet> sets READ getData NOTIFY dataChanged)
     Q_PROPERTY(QList<EntryTemplate> templates MEMBER templates CONSTANT)
     Q_PROPERTY(QString cameraPath MEMBER cameraPath CONSTANT)
@@ -34,6 +34,7 @@ class App : public QObject {
     QString cameraPath;
     QString csvPath;
     QString dbPath;
+    QStringList images;
     
     ShareUtils* share;
     EntryDatabase db;
@@ -42,13 +43,15 @@ class App : public QObject {
     void loadDb();
     void saveDb() const;
     void loadTemplates();
-    void watchImages();
     
     bool writeCsv(QIODevice *file, const EntrySet &set) const;
     
     bool writeImage(QIODevice *file, const QString &image) const;
     
     QList<ImageOut> getSetImages(const EntrySet &set) const;
+    
+private slots:
+    void onImageChanged(QString path);
     
 public:
     explicit App(QObject *parent = nullptr);
@@ -86,7 +89,6 @@ public:
     static Q_INVOKABLE QString sprintf(const QString format, int number);
     
 signals:
-    void imagesChanged();
     void dataChanged();
 };
 
