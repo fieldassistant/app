@@ -44,7 +44,7 @@ typedef QtAndroid::PermissionResult Permission;
 
 void requestAndroidPermissions() {
     
-    const QStringList permissions({
+    QStringList permissions({
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.READ_EXTERNAL_STORAGE",
@@ -52,33 +52,32 @@ void requestAndroidPermissions() {
         "android.permission.CAMERA",
     });
     
-    QHash<QString, Permission> results =
-        QtAndroid::requestPermissionsSync(permissions);
-    
-    for (QString permission : results.keys()) {
-        auto status = results[permission];
-        
-        switch (status) {
-        case Permission::Denied: 
-            qDebug() << permission << ": Denied";
-            break;
-            
-        case Permission::Granted:
-            qDebug() << permission << ": Granted";
-            break;
+    for (QString permission : permissions) {
+        Permission status = QtAndroid::checkPermission(permission);
+        if (status == Permission::Granted) {
+            permissions.removeOne(permission);
         }
     }
     
-//    if (resultHash[permission] == QtAndroid::PermissionResult::Denied) {
-//        return false;
-//    }
-    
-//    for (const QString &permission : permissions) {
-//        auto result = QtAndroid::checkPermission(permission);
+    if (!permissions.empty()) {
+        qDebug() << "Requesting permissions for:" << permissions;
         
-//        if (result == QtAndroid::PermissionResult::Denied) {
+        QHash<QString, Permission> results =
+            QtAndroid::requestPermissionsSync(permissions);
+        
+        for (QString permission : results.keys()) {
+            auto status = results[permission];
             
-//        }
-//    }
+            switch (status) {
+            case Permission::Denied:
+                qDebug() << permission << ": Denied";
+                break;
+                
+            case Permission::Granted:
+                qDebug() << permission << ": Granted";
+                break;
+            }
+        }
+    }
 }
 #endif
