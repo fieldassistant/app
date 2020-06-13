@@ -1,5 +1,6 @@
 #include "app.h"
 #include "csvwriter.h"
+#include "images.h"
 
 #include <QDebug>
 #include <QStandardPaths>
@@ -46,20 +47,13 @@ App::App(QObject *parent)
         QDir().mkpath(csvPath);
     }
     
+    share = new ShareUtils(this);
+    images = new Images(this, imagesPaths);
+    
+    connect(images, &Images::onChanged, this, &App::imagesChanged);
+    
     loadDb();
     loadTemplates();
-    
-    imageWatcher = new QFileSystemWatcher(this);
-    imageWatcher->addPaths(imagesPaths);
-    
-    connect(imageWatcher, &QFileSystemWatcher::fileChanged,
-            this, &App::onImageChanged);
-    
-    mimes = new QMimeDatabase();
-    
-    share = new ShareUtils(this);
-    
-    images = getImages();
 }
 
 QJSValue App::registerType(QQmlEngine* engine, QJSEngine *script) {
@@ -72,26 +66,6 @@ void App::registerSingleton(QQmlEngine *qmlEngine) {
     }
     QQmlContext* rootContext = qmlEngine->rootContext();
     rootContext->setContextProperty("App", instance);
-}
-
-void App::onImageChanged(QString path) {
-    QFileInfo info(path);
-    
-    // Add if it's an image type.
-    if (info.exists()) {
-        QMimeType fileType = mimes->mimeTypeForFile(info);
-        qDebug() << "Adding image:" << path << fileType.name();
-        
-        if (fileType.name().startsWith("image/") &&
-                !images.contains("files:///" + path)) {
-            images.prepend("files:///" + path);
-        }
-    }
-    else {
-        qDebug() << "Removing image:" << path;
-        // Remove from images.
-        images.removeOne("file:///" + path);
-    }
 }
 
 void App::loadDb() {
@@ -158,51 +132,12 @@ void App::loadTemplates() {
     qDebug() << "Templates:" << templates.size();
 }
 
-void getFiles(QFileInfoList &files, const QString path, int depth = 1) {
-    QDir dir(path);
-    
-    files.append(dir.entryInfoList(QDir::Files));
-    
-    if (depth == 0) return;
-    
-    for (QString subPath : dir.entryList(QDir::Dirs)) {
-        if (subPath.startsWith(".")) continue;
-        
-        qDebug() << "Diving into: " << path << subPath;
-        getFiles(files, dir.absoluteFilePath(subPath), depth - 1);
-    }
+void App::removeFile(QString path) const {
+    QFile::remove(path);
 }
 
 QStringList App::getImages() const {
-    QFileInfoList files;
-    
-    for (QString dirPath : imagesPaths) {
-        qDebug() << "Searching for images in:" << dirPath;
-        getFiles(files, dirPath);
-    }
-    
-    std::sort(files.begin(), files.end(), [](const QFileInfo &a, const QFileInfo &b) {
-        return a.lastModified() > b.lastModified();
-    });
-    
-    QStringList paths;
-    
-    for (QFileInfo info : files) {
-        QMimeType fileType = mimes->mimeTypeForFile(info);
-        
-        if (info.fileName().startsWith(".")) continue;
-        if (!fileType.name().startsWith("image/")) continue;
-        
-        paths.append("file:///" + info.absoluteFilePath());
-    }
-    
-    paths.removeDuplicates();
-    
-    return paths;
-}
-
-void App::removeFile(QString path) const {
-    QFile::remove(path);
+    return images->getImages();
 }
 
 QList<EntrySet> App::getData() const {

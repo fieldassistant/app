@@ -3,39 +3,36 @@
 
 #include <QObject>
 #include <QFile>
+#include <QFileInfo>
 #include "entry.h"
 
 class QQmlEngine;
 class QJSValue;
 class QJSEngine;
-class QFileSystemWatcher;
 class ShareUtils;
-class QMimeDatabase;
+class Images;
 
 typedef struct {
     QString name;
     QString path;
 } ImageOut;
 
-
 class App : public QObject {
     Q_OBJECT
     
-    Q_PROPERTY(QStringList images MEMBER images)
+    Q_PROPERTY(QStringList images READ getImages NOTIFY imagesChanged)
     Q_PROPERTY(QList<EntrySet> sets READ getData NOTIFY dataChanged)
     Q_PROPERTY(QList<EntryTemplate> templates MEMBER templates CONSTANT)
     Q_PROPERTY(QString cameraPath MEMBER cameraPath CONSTANT)
     
-    QFileSystemWatcher* imageWatcher;
-    QMimeDatabase* mimes;
     
     QString appPath;
     QStringList imagesPaths;
     QString cameraPath;
     QString csvPath;
     QString dbPath;
-    QStringList images;
     
+    Images* images;
     ShareUtils* share;
     EntryDatabase db;
     QList<EntryTemplate> templates;
@@ -49,9 +46,6 @@ class App : public QObject {
     bool writeImage(QIODevice *file, const QString &image) const;
     
     QList<ImageOut> getSetImages(const EntrySet &set) const;
-    
-private slots:
-    void onImageChanged(QString path);
     
 public:
     explicit App(QObject *parent = nullptr);
@@ -90,6 +84,7 @@ public:
     
 signals:
     void dataChanged();
+    void imagesChanged();
 };
 
 #endif // APPDATA_H

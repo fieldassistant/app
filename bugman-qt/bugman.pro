@@ -21,6 +21,7 @@ SOURCES += \
     app.cpp \
     csvwriter.cpp \
     entry.cpp \
+    images.cpp \
     main.cpp \
     share/shareutils.cpp
 
@@ -43,6 +44,7 @@ HEADERS += \
     app.h \
     csvwriter.h \
     entry.h \
+    images.h \
     share/shareutils.h
 
 DISTFILES += \

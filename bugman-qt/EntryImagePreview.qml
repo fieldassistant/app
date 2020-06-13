@@ -96,7 +96,7 @@ Frame {
                     Image {
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectFit
-                        source: modelData
+                        source: "file:///" + modelData
                     }
                     
                     CircleButton {

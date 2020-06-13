@@ -12,7 +12,7 @@ Item {
     
     Image {
         id: image
-        source: root.source
+        source: "file:///" + root.source
         width: parent.width
         height: parent.height
         fillMode: Image.PreserveAspectCrop
