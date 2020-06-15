@@ -155,13 +155,31 @@ Frame {
                 Repeater {
                     model: App.images
                     
-                    delegate: EntryImage {
-                        width: grid.itemWidth
-                        height: width
-                        source: modelData
+                    Loader {
                         
-                        checked: root.images.indexOf(modelData) >= 0
-                        onClicked: imagePreview.open(modelData)
+                        function itemVisible() {
+//                            console.log(flick.height, flick.contentY)
+                            
+                            var visible = Math.floor((flick.height + 450) / grid.itemWidth);
+                            var start = Math.floor((flick.contentY - 450) / grid.itemWidth) - 1;
+                            var end = start + visible + 2;
+                            
+//                            console.log(visible, start, end)
+                            
+                            var itemIndex = Math.floor(index / grid.columns);
+                            
+                            return itemIndex > start && itemIndex < end;
+                        }
+                        
+                        active: itemVisible()
+                        sourceComponent: EntryImage {
+                            width: grid.itemWidth
+                            height: width
+                            source: modelData
+                            
+                            checked: root.images.indexOf(modelData) >= 0
+                            onClicked: imagePreview.open(modelData)
+                        }
                     }
                 }
             }
