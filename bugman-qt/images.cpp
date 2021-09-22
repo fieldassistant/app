@@ -57,7 +57,7 @@ QStringList Images::getImages(int max) const {
     });
     
     for (QFileInfo file : files) {
-        images.append(file.absoluteFilePath());
+        images.append("file:///" + file.absoluteFilePath());
     }
     
     return images;

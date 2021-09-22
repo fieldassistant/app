@@ -11,17 +11,12 @@ Item {
     implicitWidth: 420
     
     signal captured(string image)
+    signal close()
     
-    property bool fullscreen: false
     property var preview: null
     property bool searching: false
     property bool captureAfterSearch: false
     property bool capturing: false
-    
-    function close() {
-        root.fullscreen = false
-        root.reject();
-    }
     
     function accept() {
         root.preview = null;
@@ -102,8 +97,6 @@ Item {
         id: overlay
         parent: Window.contentItem
         anchors.fill: parent
-        visible: fullscreen
-        enabled: visible
         
         Button {
             id: exitButton
@@ -174,52 +167,16 @@ Item {
     VideoOutput {
         id: video
         source: camera
+        parent: overlay
         width: parent.width
         height: parent.height
         fillMode: VideoOutput.PreserveAspectCrop
         autoOrientation: true
         
-        states: [
-            State {
-                when: root.fullscreen
-                ParentChange {
-                    target: video
-                    parent: overlay
-                    width: parent.width
-                    height: parent.height
-                    x: 0
-                    y: 0
-                }
-            },
-            State {
-                when: !root.fullscreen
-                ParentChange {
-                    target: video
-                    parent: root
-                    width: parent.width
-                    height: parent.height
-                }
-            }
-
-        ]
-        
-        transitions: Transition {
-            ParentAnimation {
-                NumberAnimation {
-                    properties: "x,y,width,height"
-                    easing.type: Easing.OutCirc
-                }
-            }
-        }
-        
-        
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                if (!root.fullscreen) {
-                    root.fullscreen = true;
-                }
-                else if (root.searching) {
+                if (root.searching) {
                     root.captureAfterSearch = true;
                 }
                 else if (!root.preview) {

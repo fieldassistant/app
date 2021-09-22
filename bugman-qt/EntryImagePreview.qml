@@ -86,7 +86,7 @@ Frame {
                     Image {
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectFit
-                        source: "file:///" + modelData
+                        source: modelData
                         asynchronous: true
                         cache: false
                     }

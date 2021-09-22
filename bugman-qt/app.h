@@ -56,6 +56,8 @@ public:
     
     QStringList getImages() const;
     
+    Q_INVOKABLE void refreshImages();
+    
     QList<EntrySet> getData() const;
     
     Q_INVOKABLE void removeFile(QString path) const;

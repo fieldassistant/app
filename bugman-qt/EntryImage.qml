@@ -13,7 +13,7 @@ Item {
     
     Image {
         id: image
-        source: "file:///" + root.source
+        source: root.source
         
         asynchronous: true
         autoTransform: true

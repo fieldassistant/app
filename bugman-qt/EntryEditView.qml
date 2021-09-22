@@ -254,6 +254,35 @@ Item {
         }
     }
     
+    CircleButton {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 25
+        
+        highlighted: true
+        source: "icons/focus.svg"
+        onClicked: {
+            camera.active = true
+        }
+    }
+    
+    Loader {
+        id: camera
+        active: false
+        sourceComponent: Camera {
+            onCaptured: {
+                console.log('SNAP:', image);
+                root.images.unshift(image);
+            }
+            onClose: {
+                camera.active = false;
+                root.imagesChanged();
+                App.refreshImages();
+                gc();
+            }
+        }
+    }
+    
     EntryImagePreview {
         id: imagePreview
         checkable: true

@@ -138,6 +138,10 @@ QStringList App::getImages() const {
     return images->getImages();
 }
 
+void App::refreshImages() {
+    emit imagesChanged();
+}
+
 QList<EntrySet> App::getData() const {
     return db.sets.values();
 }
