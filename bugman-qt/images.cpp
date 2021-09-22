@@ -1,5 +1,4 @@
 #include "images.h"
-#include <QFileSystemWatcher>
 #include <QMimeDatabase>
 #include <QDebug>
 #include <QDir>
@@ -11,12 +10,11 @@ Images::Images(QObject *parent, QStringList paths) : QObject(parent) {
 }
 
 
-int Images::collectFiles(QFileInfoList &files, const QString &path, int max, int depth) const {
+void Images::collectFiles(QFileInfoList &files, const QString &path, int max, int depth) const {
     QDir dir(path);
-    int size = 0;
     
     for (QFileInfo file : dir.entryInfoList(QDir::Files)) {
-        if (size == max) break;
+        if (files.size() == max) break;
         
         QMimeType fileType = mimes->mimeTypeForFile(file);
         
@@ -25,23 +23,20 @@ int Images::collectFiles(QFileInfoList &files, const QString &path, int max, int
         
         QString filePath = file.absoluteFilePath();
         
-        qDebug() << "Image:" << filePath;
         files.append(file);
-        size += 1;
+        qDebug() << "Image (" << files.size() << "):" << filePath;
     }
     
-    if (size == max) return size;
-    if (depth == 0) return size;
+    if (files.size() == max) return;
+    if (depth == 0) return;
     
     for (QString subPath : dir.entryList(QDir::Dirs)) {
         if (subPath.startsWith(".")) continue;
         QString subDir = dir.absoluteFilePath(subPath);
         qDebug() << "Diving into:" << subDir;
         
-        size += collectFiles(files, subDir, max - size, depth - 1);
+        collectFiles(files, subDir, max, depth - 1);
     }
-    
-    return size;
 }
 
 

@@ -50,8 +50,6 @@ App::App(QObject *parent)
     share = new ShareUtils(this);
     images = new Images(this, imagesPaths);
     
-    connect(images, &Images::onChanged, this, &App::imagesChanged);
-    
     loadDb();
     loadTemplates();
 }
