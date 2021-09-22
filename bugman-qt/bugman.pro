@@ -45,6 +45,7 @@ HEADERS += \
     csvwriter.h \
     entry.h \
     images.h \
+    share/platformshareutils.h \
     share/shareutils.h
 
 DISTFILES += \
