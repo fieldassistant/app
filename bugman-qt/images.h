@@ -12,20 +12,18 @@ class Images : public QObject
 {
     Q_OBJECT
     
-    QStringList images;
+    QStringList paths;
     
     QFileSystemWatcher* watcher;
     QMimeDatabase* mimes;
     
-    int collectFiles(QFileInfoList &files, const QString &path, int depth = 1);
-    
-    void fileChanged(QString path);
-    void directoryChanged(QString path);
+    int collectFiles(QFileInfoList &files, const QString &path, int max, int depth) const;
     
 public:
     explicit Images(QObject *parent, QStringList paths);
     
-    QStringList getImages() const;
+    void clear();
+    QStringList getImages(int max = 100) const;
     
 signals:
     void onChanged();
