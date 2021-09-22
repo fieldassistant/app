@@ -11,5 +11,5 @@ Key Features:
 - CSV export (bundled zip)
 
 Docs: [gwillz.github.io/bugman](//gwillz.github.io/bugman)
-Web: (README)[//github.com/gwillz/bugman/blob/master/bugman-web/README.md]
-Native: (README)[//github.com/gwillz/bugman/blob/master/bugman-qt/README.md]
+Web: [//github.com/gwillz/bugman/blob/master/bugman-web/README.md](README)
+Native: [//github.com/gwillz/bugman/blob/master/bugman-qt/README.md](README)
