@@ -213,17 +213,13 @@ Frame {
                 spacing: 10
                 Layout.fillWidth: true
                 
-                columns: Math.floor(width / 100)
-                property int itemWidth: (width + spacing) / columns - spacing
-                
                 Repeater {
-                    model: entry.images.slice(0)
+                    model: root.entry.images.slice(0)
                     
                     delegate: EntryImage {
-                        width: grid.itemWidth
+                        width: 120
                         height: width
                         source: modelData
-                        checked: false
                         onClicked: imagePreview.open(modelData)
                     }
                 }

@@ -211,9 +211,6 @@ Item {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     
-                    columns: Math.floor(width / 100)
-                    property int itemWidth: (width + spacing) / columns - spacing
-                    
                     Button {
                         id: imageButton
                         background: Rectangle {
@@ -222,18 +219,20 @@ Item {
                         flat: true
                         icon.source: "icons/plus.svg"
                         icon.color: Theme.colorBrick
-                        width: grid.itemWidth
+                        width: 120
                         height: width
                         icon.width: width / 2
                         icon.height: width / 2
-                        onClicked: imageDialog.open()
+                        onClicked: {
+                            imageDialog.open()
+                        }
                     }
                     
                     Repeater {
                         model: root.images
                         
                         delegate: EntryImage {
-                            width: grid.itemWidth
+                            width: 120
                             height: width
                             source: modelData
                             checked: true
