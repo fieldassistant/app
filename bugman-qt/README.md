@@ -8,26 +8,24 @@
 #### features
 - about view
 - prevent duplicate vouchers
+- update GPS manually
+
+#### layout/style
+- restyle the header
+- idk, new colours?
+- move 'about' button somewhere.. logical
+- move entry-block button (edit,trash) to the 'tab'
+- move entry buttons (add,edit,export,trash) to the floating circle button
+- short press to toggle an image, long press to preview
 
 #### fixes
 - fix editing sets (is it only 'name' ?)
-- opening entry edit view is slow (is it the images grid?)
-- fix home view first swipe panel
-    - current workaround is gross
-- some bugs around selection sets in image picker
-- new camera images aren't refreshed into the image picker
-  - probably image lists not updating again
-  - maybe just manually force a reload whenever it opens
 - fix camera image orientation on saved files?
-- I think the gps position doesn't update properly
-  - like, first data doesn't exist at all
-- remove ticks on entryblock imagebar
-
+- I think the gps position doesn't update properly (fix needs testing)
+- exporting on Android is borked
 
 #### housework
-- images picker kinda jumps when closing
 - separate entry types into separate files
-- the "active" state for the imagebar loader doesn't really work
 - the image preview slides side-to-side when opening
 - many docs/comments
 - onTextChanged in EntryField and TemplateField is kinda dodgey
@@ -37,7 +35,8 @@
 - more field types
     - range (from, to)
     - combobox (list of options)
-
+- public repo of templates
+- map view
 
 ### Development
 
