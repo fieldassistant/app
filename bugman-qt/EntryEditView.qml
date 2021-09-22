@@ -69,6 +69,9 @@ Item {
         id: gps
         updateInterval: 5000
         onUpdateTimeout: console.log("GPS timeout")
+        onPositionChanged: {
+            entry.position = gps.position.coordinate
+        }
     }
     
     ColumnLayout {
