@@ -13,8 +13,6 @@ Item {
         interactive: true
         clip: true
         anchors.fill: parent
-        focus: false
-        focusPolicy: Qt.NoFocus
         
         Repeater {
             id: repeater
@@ -27,27 +25,23 @@ Item {
                 }
             }
         }
-        
-        Item {
-//            Component.onCompleted: {
-//                swipeView.currentIndex = 0
-//            }
-            
-            Button {
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("Add Set")
-                highlighted: true
-                onClicked: nav.push("SetEditView.qml")
-            }
-        }
     }
     
     PageIndicator {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         currentIndex: swipeView.currentIndex
-        count: repeater.count + 1
+        count: repeater.count
+    }
+    
+    CircleButton {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 25
+        
+        highlighted: true
+        source: "icons/plus.svg"
+        onClicked: nav.push("SetEditView.qml")
     }
 }
 
