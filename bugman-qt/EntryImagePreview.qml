@@ -5,17 +5,13 @@ import QtQuick.Window 2.12
 Frame {
     id: root
     
-    signal update()
-    
     property var images: ([])
-    property var selection: images
-    property var local: selection.slice(0)
+    property var selection: ([])
     property bool checkable: false
     
     function close() {
         root.y = root.height;
         root.enabled = false;
-        root.update();
     }
     
     function open(image = "") {
@@ -35,13 +31,7 @@ Frame {
         else {
             root.selection.push(image);
         }
-        
-        if (root.images.length == 0) {
-            root.close();
-        }
-        else {
-            root.local = root.selection.slice(0);
-        }
+        root.selectionChanged();
     }
     
     function jump(image) {
@@ -97,6 +87,8 @@ Frame {
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectFit
                         source: "file:///" + modelData
+                        asynchronous: true
+                        cache: false
                     }
                     
                     CircleButton {
@@ -111,7 +103,7 @@ Frame {
                         anchors.bottom: parent.bottom
                         anchors.bottomMargin: 150
                         
-                        checked: root.local.indexOf(modelData) >= 0
+                        checked: root.selection.indexOf(modelData) >= 0
                         onClicked: root.toggle(modelData)
                     }
                 }
@@ -144,7 +136,7 @@ Frame {
                 EntryImage {
                     anchors.fill: parent
                     source: modelData
-                    checked: root.local.indexOf(modelData) >= 0
+                    checked: root.selection.indexOf(modelData) >= 0
                     onClicked: root.jump(modelData)
                 }
             }

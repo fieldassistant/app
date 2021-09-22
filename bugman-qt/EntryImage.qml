@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.12
 
 Item {
     id: root
@@ -7,14 +7,24 @@ Item {
     
     property string source
     property bool checked: false
+    property int padding: 0
     
     // Add a checked icon.
     
     Image {
         id: image
         source: "file:///" + root.source
-        width: parent.width
-        height: parent.height
+        
+        asynchronous: true
+        autoTransform: true
+        cache: false
+        sourceSize.width: width * 1.4
+        sourceSize.height: height * 1.4
+        
+        x: padding
+        y: padding
+        width: parent.width - padding * 2
+        height: parent.height - padding * 2
         fillMode: Image.PreserveAspectCrop
         
         MouseArea {

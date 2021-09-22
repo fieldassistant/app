@@ -11,25 +11,15 @@ Frame {
     signal update()
     
     property var images: []
-    property int offset: flick.height
     
     function open() {
-        offset = flick.height - 300;
         enabled = true;
-        visible = true;
         forceActiveFocus();
     }
     
     function close() {
-        if (camera.item && camera.item.fullscreen) {
-            camera.item.close()
-        }
-        else {
-            enabled = false;
-            offset = flick.height;
-            flick.contentY = 0;
-            root.update();
-        }
+        enabled = false;
+        root.update();
     }
     
     function addImage(image) {
@@ -41,37 +31,18 @@ Frame {
     anchors.fill: parent
     padding: 0
     enabled: false
-    visible: false
+    visible: enabled
     
-    background: Rectangle { visible: false }
+    background: Rectangle { color: '#fff' }
     
     Keys.onBackPressed: {
         event.accepted = true;
         close();
     }
-    
-    Behavior on offset {
-        PropertyAnimation {
-            easing.type: Easing.OutCirc
-            duration: 200
-            
-            onFinished: {
-                if (!root.enabled) {
-                    root.visible = false
-                }
-            }
-        }
-    }
-    
-    Binding {
-        target: header
-        property: "y"
-        value: Math.max(0, -flick.contentY + offset)
-    }
-    
+
     Rectangle {
         id: header
-        color: "#fff"
+        color: '#fff'
         height: row.height + 20
         width: root.width
         z: 10
@@ -102,87 +73,26 @@ Frame {
             }
         }
     }
+
     
-    Flickable {
-        id: flick
-        clip: true
+    GridView {
+        id: grid
+        anchors.fill: parent
+        anchors.topMargin: header.height
         
-        flickableDirection: Flickable.VerticalFlick
-        height: root.height
-        width: root.width
+        cellWidth: (width + spacing) / Math.floor(width / 100) - spacing
+        cellHeight: cellWidth
         
-        onDragEnded: {
-            if (contentY < -50) {
-                root.close();
-            }
-        }
+        model: App.images
         
-        contentHeight: content.implicitHeight
-        contentWidth: content.implicitWidth
-        
-        Rectangle {
-            id: content
-            color: "#fff"
-            implicitHeight: grid.height + header.height + 450
-            implicitWidth: flick.width
-            y: offset
+        delegate: EntryImage {
+            width: grid.cellWidth
+            height: grid.cellHeight
+            padding: 5
             
-            Grid {
-                id: grid
-                spacing: 10
-                anchors.top: parent.top
-                anchors.topMargin: header.height
-                anchors.right: parent.right
-                anchors.left: parent.left
-                anchors.margins: 10
-                
-                columns: Math.floor(width / 100)
-                property int itemWidth: (width + spacing) / columns - spacing
-                
-                Loader {
-                    id: camera
-                    active: root.enabled
-                    
-                    sourceComponent: Camera {
-                        width: grid.itemWidth
-                        height: width
-                        z: 15
-                        layer.enabled: true
-                        onCaptured: root.addImage(image)
-                    }
-                }
-                
-                Repeater {
-                    model: App.images
-                    
-                    Loader {
-                        
-                        function itemVisible() {
-//                            console.log(flick.height, flick.contentY)
-                            
-                            var visible = Math.floor((flick.height + 450) / grid.itemWidth);
-                            var start = Math.floor((flick.contentY - 450) / grid.itemWidth) - 1;
-                            var end = start + visible + 2;
-                            
-//                            console.log(visible, start, end)
-                            
-                            var itemIndex = Math.floor(index / grid.columns);
-                            
-                            return itemIndex > start && itemIndex < end;
-                        }
-                        
-                        active: itemVisible()
-                        sourceComponent: EntryImage {
-                            width: grid.itemWidth
-                            height: width
-                            source: modelData
-                            
-                            checked: root.images.indexOf(modelData) >= 0
-                            onClicked: imagePreview.open(modelData)
-                        }
-                    }
-                }
-            }
+            source: modelData
+            checked: root.images.indexOf(modelData) >= 0
+            onClicked: imagePreview.open(modelData)
         }
     }
     
@@ -192,7 +102,7 @@ Frame {
         
         images: App.images
         selection: root.images
-        onImagesChanged: root.imagesChanged()
+        onSelectionChanged: root.imagesChanged()
     }
 }
 

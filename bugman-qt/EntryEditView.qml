@@ -257,7 +257,7 @@ Item {
         
         images: root.images.slice(0)
         selection: root.images
-        onUpdate: root.imagesChanged()
+        onSelectionChanged: root.imagesChanged()
     }
     
     ImagePicker {
