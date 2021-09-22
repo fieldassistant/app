@@ -257,6 +257,7 @@ Frame {
         id: imagePreview
         checkable: false
         images: entry.images.slice(0)
+        selection: images
     }
     
     DeleteDialog {

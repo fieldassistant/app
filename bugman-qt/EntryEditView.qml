@@ -288,15 +288,30 @@ Item {
         
         images: root.images.slice(0)
         selection: root.images
-        onSelectionChanged: root.imagesChanged()
+        
+        onSelect: {
+            root.images = images;
+        }
     }
     
-    ImagePicker {
+    Loader {
         id: imageDialog
+        active: false
         
-        images: root.images
-        onUpdate: root.imagesChanged()
+        function open() {
+            active = true;
+        }
+        
+        sourceComponent: ImagePicker {
+            enabled: true
+            images: root.images
+            onSelect: {
+                imageDialog.active = false;
+                root.images = images;
+            }
+        }
     }
+
 }
 
 

@@ -9,9 +9,12 @@ Frame {
     property var selection: ([])
     property bool checkable: false
     
+    signal select(var images)
+    
     function close() {
         root.y = root.height;
         root.enabled = false;
+        root.select(root.selection);
     }
     
     function open(image = "") {
@@ -20,6 +23,10 @@ Frame {
         root.visible = true;
         root.forceActiveFocus();
         root.y = 0;
+        
+        if (root.selection.length == 0) {
+            root.selection = images.slice(0);
+        }
     }
     
     function toggle(image) {
@@ -136,7 +143,7 @@ Frame {
                 EntryImage {
                     anchors.fill: parent
                     source: modelData
-                    checked: root.selection.indexOf(modelData) >= 0
+                    checked: root.checkable && root.selection.indexOf(modelData) >= 0
                     onClicked: root.jump(modelData)
                 }
             }

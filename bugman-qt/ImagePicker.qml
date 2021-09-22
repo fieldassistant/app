@@ -8,9 +8,9 @@ Frame {
 //    implicitWidth: 420
 //    implicitHeight: 420
     
-    signal update()
+    signal select(var images)
     
-    property var images: []
+    property var images: ([])
     
     function open() {
         enabled = true;
@@ -19,7 +19,7 @@ Frame {
     
     function close() {
         enabled = false;
-        root.update();
+        root.select(images);
     }
     
     function addImage(image) {
@@ -100,9 +100,12 @@ Frame {
         id: imagePreview
         checkable: true
         
-        images: App.images
+        images: App.images.slice(0)
         selection: root.images
-        onSelectionChanged: root.imagesChanged()
+        
+        onSelect: {
+            root.images = images;
+        }
     }
 }
 
