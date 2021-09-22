@@ -82,7 +82,7 @@ Item {
         
         spacing: -45
         clip: true
-        focus: false
+        currentIndex: -1
         
         model: entrySet.entries
         
@@ -93,7 +93,7 @@ Item {
             entry: modelData
         }
     }
-    
+
     Button {
         anchors.centerIn: parent
         visible: entrySet.entries.length === 0
