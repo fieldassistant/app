@@ -10,5 +10,4 @@ build/
 build-*
 /zlib
 /quazip
-/bugman-web
 *.DS_Store
