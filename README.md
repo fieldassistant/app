@@ -1,5 +1,5 @@
 
-# Field Assistant is a no-bullshit data collection app for researchers.
+# Field Assistant is a paper-free, no-nonsense data collection app for researchers.
 
 Key Features:
 
